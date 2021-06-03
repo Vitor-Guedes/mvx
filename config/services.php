@@ -16,11 +16,14 @@ $container->set('settings', function () {
     if (getenv('DATABASE_URL')) {
         $settings['db'] = [
             'driver'   => 'pgsql',
-            'user' => getenv('DB_USER'),
+            'username' => getenv('DB_USER'),
             'password' => getenv('DB_PASS'),
             'host' =>  getenv('DB_HOST'),
             'port' => getenv('DB_PORT'),
-            'dbname' => getenv('DB_NAME')
+            'database' => getenv('DB_NAME'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => ''
         ];
     } else {
         /** for dev */
