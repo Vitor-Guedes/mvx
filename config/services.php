@@ -6,6 +6,7 @@ use DI\Container;
 use Slim\Views\Twig;
 use Slim\Factory\AppFactory;
 use App\Factory\DatabaseManager;
+use Illuminate\Support\Facades\Facade;
 
 AppFactory::setContainer($container);
 
@@ -39,7 +40,12 @@ $container->set('settings', function () {
 });
 
 $container->set('view', function() {
-    return Twig::create(BASEPATH . '/views', ['cache' => false]);
+    $twig = Twig::create(BASEPATH . '/views', [
+        'debug' => true,
+        'cache' => false
+    ]);
+    $twig->addExtension(new \Twig\Extension\DebugExtension());
+    return $twig;
 });
 
 $container->set('db', function (Container $container) {
@@ -47,4 +53,7 @@ $container->set('db', function (Container $container) {
     return new $factory->capsule;
 });
 
-$container->get('db');
+$container->set('bootDb', function (Container $container) {
+    $_app = ['db' => $container->get('db')];
+    Facade::setFacadeApplication($_app);
+});

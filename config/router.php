@@ -1,27 +1,47 @@
 <?php
 
-$app->get('/migrate/{table}', function ($request, $response, $args) {
-    $namespace = "App\\Database\\Migrations\\";
-    $table = ucfirst($args['table']);
-    $file = "Create%sTable";
+$app->get('/migrations/{table}', function ($request, $response, $args) {
+    $table = $args['table'] ?? '';
+    $msg = ''; 
 
     try {
-        $class = $namespace . sprintf($file, $table);
-        if (class_exists($class)) {
-            $create = new $class();
-            $create->up();
+        $instance = \App\Factory\DabaseStructure::create('Migrations', $table);
+        if ($instance) {
+            $instance->up();
 
-            $response->getBody()->write("$table, Up in database.");
+            $msg = "$table, Up in database.";
         }
     } catch (Exception $e) {
-        $response->getBody()->write($e->getMessage());
+        $msg = $e->getMessage(); 
     }
-        
+
+    $response->getBody()->write($msg);
+    return $response;
+});
+
+$app->get('/seeders/{table}', function ($request, $response, $args) {
+    $table = $args['table'] ?? '';    
+    $msg = '';
+
+    try {
+        $instance = \App\Factory\DabaseStructure::create('Seeders', $table);
+        if ($instance) {
+            $instance->run();
+
+            $msg = "$table, inserted seeders.";
+        }
+    } catch (Exception $e) {
+        $msg = $e->getMessage();
+    }
+
+    $response->getBody()->write($msg);
     return $response;
 });
 
 $app->get('/', function ($request, $response, $args) {
+    $products = \App\Models\Product::all()->toArray();
     return $this->get('view')->render($response, '/templates/index.phtml', [
-        'title' => 'Home'
+        'title' => 'Home',
+        'products' => $products
     ]);
 });

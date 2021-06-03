@@ -1,5 +1,13 @@
 {% extends 'layout.phtml' %}
 
 {% block content %}
-    #Index
+    <div class="row">
+        <h3>#Index</h3>
+    </div>
+    
+    {% for product in products %}
+        * {{ product.name }}, R$ {{ product.price }}
+    {% else %}
+        No products have been found.
+    {% endfor %}
 {% endblock %}

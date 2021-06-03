@@ -2,9 +2,9 @@
 
 namespace App\Database\Migrations;
 
-use Illuminate\Database\Schema\Blueprint;
-use App\Illuminate\Suport\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProductsTable
 extends Migration
