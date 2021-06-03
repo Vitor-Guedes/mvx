@@ -15,7 +15,7 @@ Vue.component('annotation', {
             <input v-if="!label" v-model="customerName" v-on:focusout="showInput" type="text" class="input" placeholder="Name Customer" autofocus>
         </h5>
         <p class="card-text">
-            <product-item v-for="item in data.productItems" :product="item"></product-item>
+            <product-item v-for="item in data.productItems" :product="item" :key="item.itemId"></product-item>
         </p>
         <button class="btn btn-outline-dark btn-sm" v-on:click.self.prevent.stop="addProduct">Novo Item</button>
         <div class="row mt-2">
