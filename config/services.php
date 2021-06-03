@@ -21,9 +21,9 @@ $container->set('settings', function () {
             'host' =>  getenv('DB_HOST'),
             'port' => getenv('DB_PORT'),
             'database' => getenv('DB_NAME'),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => ''
+            // 'charset' => 'utf8mb4',
+            // 'collation' => 'utf8mb4_unicode_ci',
+            // 'prefix' => ''
         ];
     } else {
         /** for dev */
