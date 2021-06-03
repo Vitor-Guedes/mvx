@@ -5,12 +5,16 @@ $app->get('/migrate/{table}', function ($request, $response, $args) {
     $table = ucfirst($args['table']);
     $file = "Create%sTable";
 
-    $class = $namespace . sprintf($file, $table);
-    if (class_exists($class)) {
-        $create = new $class();
-        $create->up();
+    try {
+        $class = $namespace . sprintf($file, $table);
+        if (class_exists($class)) {
+            $create = new $class();
+            $create->up();
 
-        $response->getBody()->write("$table, Up in database.");
+            $response->getBody()->write("$table, Up in database.");
+        }
+    } catch (Exception $e) {
+        $response->getBody()->write($e->getMessage());
     }
         
     return $response;
