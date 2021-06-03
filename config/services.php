@@ -12,16 +12,14 @@ AppFactory::setContainer($container);
 $container->set('settings', function () {
     $settings = [];
 
-    if ($url = getenv('DATABASE_URL')) {
-        $dbopts = parse_url($url);
-
+    if (getenv('DATABASE_URL')) {
         $settings['db'] = [
             'driver'   => 'pgsql',
-            'user' => $dbopts["user"],
-            'password' => $dbopts["pass"],
-            'host' => $dbopts["host"],
-            'port' => $dbopts["port"],
-            'dbname' => ltrim($dbopts["path"],'/')
+            'user' => getenv('DB_USER'),
+            'password' => getenv('DB_PASS'),
+            'host' =>  getenv('DB_HOST'),
+            'port' => getenv('DB_PORT'),
+            'dbname' => getenv('DB_NAME')
         ];
     } else {
         /** for dev */
