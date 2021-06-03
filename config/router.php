@@ -45,3 +45,15 @@ $app->get('/', function ($request, $response, $args) {
         'products' => $products
     ]);
 });
+
+$app->post('/product/names', function ($request, $response, $args) {
+    $code = 200;
+
+    $_response = App\Models\Product::all();
+
+    $_response = json_encode($_response);
+    $response->getBody()->write($_response);
+    return $response
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus($code);
+});

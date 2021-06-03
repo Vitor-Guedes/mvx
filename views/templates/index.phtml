@@ -1,13 +1,29 @@
 {% extends 'layout.phtml' %}
 
 {% block content %}
-    <div class="row">
-        <h3>#Index</h3>
-    </div>
-    
-    {% for product in products %}
-        * {{ product.name }}, R$ {{ product.price }}
-    {% else %}
-        No products have been found.
-    {% endfor %}
+    <div class="container">
+        <div class="row" id="annotations">
+            <div class="row align-items-center mx-auto">
+                <div class="col-7 col-md-7 col-xl-10"> 
+                    <div class="row p-0">
+                        <h1 class="text-secondary my-2">Atendimento</h1>
+                    </div>
+                </div>
+
+                <div class="col-5 col-md-7 col-xl-2">
+                    <div class="row p-0">
+                        <button v-on:click="newMeetCustomer" class="btn btn-outline-dark btn-sm">Novo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="container-meetCustomers" class="row">
+                <annotation v-for="ann in annotations" :data="ann"></annotation>
+            </div>
+        </div>
+   </div>
+{% endblock %}
+
+{% block vue_components %}
+    <script src="/js/annotation.js"></script>
 {% endblock %}
