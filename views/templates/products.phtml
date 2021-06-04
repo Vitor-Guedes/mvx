@@ -1,0 +1,149 @@
+{% extends 'layout.phtml' %}
+
+{% block navmenu %}
+    {% include 'menu.phtml' %}
+{% endblock %}
+
+{% block content %}
+   <div class="container">
+        <div class="row" id="products">
+            <div class="row align-items-center mx-auto">
+                <div class="col-10">
+                    <h1 class="text-secondary my-2">Produtos</h1>
+                </div>
+
+                <div class="col-1">
+                    <div class="col-2 col-md-5 col-xl-2">
+                        <button class="btn btn-sm" type="button" v-on:click="showMenu">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link text-secondary active" id="nav-list-tab" data-bs-toggle="tab" data-bs-target="#nav-list" type="button" role="tab" aria-controls="nav-list" aria-selected="true">Lista</button>
+                    <button class="nav-link text-secondary" id="nav-register-tab" data-bs-toggle="tab" data-bs-target="#nav-register" type="button" role="tab" aria-controls="nav-register" aria-selected="false">Cadastrar</button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab">
+                    <product-list></product-list>
+                </div>
+                <div class="tab-pane fade" id="nav-register" role="tabpanel" aria-labelledby="nav-register-tab">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="my-2">
+                                <label for="product-name" class="form-label">Nome do Produto:</label>
+                                <input type="text" class="form-control" v-model="productName" id="product-name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="my-2">
+                                <label for="product-price" class="form-label">Preço do Produto:</label>
+                                <input type="text" class="form-control" v-model="productPrice" id="product-price" v-on:keypress="onlyNumbers">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="my-2">
+                                <button class="btn btn-outline-dark btn-sm" v-on:click="addProduct">Cadastrar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <alert-message></alert-message>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+   </div>
+{% endblock %}
+
+{% block vue_components %}
+    <script>
+        const urlFor = 'products'; 
+    </script>
+    <script src="/js/annotation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var product = new Vue({
+                el: '#products',
+                data () {
+                    return {
+                        productName: '',
+                        productPrice: 0.00,
+                    }
+                },
+                methods: {
+                    addProduct: function () {
+                        if (this.productName == '' || this.productPrice == 0.00) {
+                            return ;
+                        }
+
+                        let data = {
+                            name: this.productName,
+                            price: this.productPrice
+                        };
+
+                        axios({
+                            method: 'post',
+                            url: '/product/register',
+                            data: data
+                        }).then( response => {
+                            $evBus.$emit('updateList', data);
+
+                            let alert = {
+                                message: response.data.message,
+                                type: 'alert-success'
+                            };
+
+                            if (!response.data.success) {
+                                alert.type = 'alert-danger';
+                            }
+
+                            $evBus.$emit('alert', alert);
+                        }).catch( err => {
+                            let alert = {
+                                type: 'alert-danger',
+                                message: err
+                            };
+                            $evBus.$emit('alert', alert);
+                        });
+
+                        this.productName = '';
+                        this.productPrice = 0.00;
+                    },
+
+                    showMenu: function () {
+                        $evBus.$emit('show-navmenu');
+                    },
+
+                    onlyNumbers: function (evt) {
+                        let ev = evt || window.event;
+                        if (!(/[\d]+|(\.)/.test(ev.key))) {
+                            ev.returnValue = false;
+                            ev.preventDefault();
+                        }
+                    }
+                }
+            });
+
+            let navMenu = new Vue({
+                el: '#nav-menu',
+            });
+        });
+    </script>
+{% endblock %}

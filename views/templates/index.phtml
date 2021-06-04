@@ -1,19 +1,33 @@
 {% extends 'layout.phtml' %}
 
+{% block navmenu %}
+    {% include 'menu.phtml' %}
+{% endblock %}
+
 {% block content %}
-    <div class="container">
+    <div class="container-fluid">
         <div class="row" id="annotations">
             <div class="row align-items-center mx-auto">
-                <div class="col-7 col-md-7 col-xl-10"> 
-                    <div class="row p-0">
-                        <h1 class="text-secondary my-2">Atendimento</h1>
+                <div class="col-7 col-md-7 col-xl-9"> 
+                    <h1 class="text-secondary my-2">Atendimento</h1>
+                </div>
+
+                <div class="col-3 col-md-5 col-xl-2">
+                    <div class="row">
+                        <button v-on:click="newMeetCustomer" class="btn btn-outline-dark btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
-                <div class="col-5 col-md-7 col-xl-2">
-                    <div class="row p-0">
-                        <button v-on:click="newMeetCustomer" class="btn btn-outline-dark btn-sm">Novo</button>
-                    </div>
+                <div class="col-2 col-md-5 col-xl-1">
+                    <button class="btn btn-sm" type="button" v-on:click="showMenu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -25,5 +39,37 @@
 {% endblock %}
 
 {% block vue_components %}
+    <script> const urlFor = 'index'; </script>
     <script src="/js/annotation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var app = new Vue({
+                el: '#annotations',
+                methods: {
+                    newMeetCustomer: function (evt) {
+                        evt.preventDefault();
+                        this.annotations.push({
+                            id: getUuid(),
+                            customerName: 'Nome do Cliente',
+                            productItems: [],
+                            total: 0
+                        })
+                    },
+
+                    showMenu: function () {
+                        $evBus.$emit('show-navmenu');
+                    }
+                },
+                data () {
+                    return {
+                        annotations: []
+                    }
+                }
+            });
+
+            let navMenu = new Vue({
+                el: '#nav-menu',
+            });
+        });
+    </script>
 {% endblock %}
